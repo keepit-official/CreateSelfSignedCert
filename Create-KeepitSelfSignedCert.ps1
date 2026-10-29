@@ -81,6 +81,8 @@
 
 .NOTES
     Change history
+    2026-10-29  Fixed a string-format error on the first subject field that
+                stopped the script right after the common name prompt.
     2026-10-23  Removed -KeySpec Signature (rejected by the CNG provider on
                 current Windows builds), use a real certificate store path and
                 the E= subject attribute (SUP-585). Fixed the public key file,
@@ -283,7 +285,7 @@ foreach ($name in $subjectFields.Keys) {
         throw 'The country name must be a two-letter code.'
     }
     if (-not [string]::IsNullOrEmpty($value)) {
-        $subjectParts.Add('{0}={1}' -f $subjectFields[$name].Attribute, (Format-SubjectValue -Value $value))
+        $subjectParts.Add(('{0}={1}' -f $subjectFields[$name].Attribute, (Format-SubjectValue -Value $value)))
     }
 }
 $subject = $subjectParts -join ','
@@ -341,7 +343,7 @@ try {
 }
 finally {
     if ($cert -and -not $KeepInStore) {
-        $storePath = Join-Path -Path $storeLocation -ChildPath $cert.Thumbprint
+        $storePath = "$storeLocation\$($cert.Thumbprint)"
         try {
             Remove-Item -LiteralPath $storePath -DeleteKey -ErrorAction Stop
             Write-Verbose "Removed certificate $($cert.Thumbprint) from $storeLocation."

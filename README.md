@@ -141,6 +141,9 @@ underlying error.
 
 ## History
 
+- **2026-10-29** Fixed a string-format error that stopped the script right
+  after the common name prompt (reported in SUP-585 on the reworked script).
+  The full prompt-to-file flow is now exercised in testing.
 - **2026-10-23** Fixed the certificate creation failure reported in SUP-585:
   removed `-KeySpec Signature`, used a real certificate store path and the
   `E=` subject attribute. Fixed the public key file, which previously contained
